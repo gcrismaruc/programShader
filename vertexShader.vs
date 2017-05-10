@@ -23,11 +23,11 @@ uniform mat4 depthProjMatrix;
 void main()
 {	
 	//color = in_Color;
-	//texCoord = s_vTexCoord;
+	texCoord = s_vTexCoord;
 
 	vec4 vertexDic = vec4(in_Position, 1.0);
-	//vertexDic.z = texture2DRect(texture, in_Position.xy).r;
-	texCoord = vec2(in_Position.xy);
+	vertexDic.z = texture2DRect(texture, s_vTexCoord.xy).r;
+	//texCoord = vec2(in_Position.xy);
 
-	gl_Position =   vertexDic;
+	gl_Position =  vertexDic;
 }

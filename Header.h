@@ -57,8 +57,8 @@ int vertexIndices[] = {
 };
 
 GLuint * vertexIndices1;
-
 GLfloat *vertexPositions1;
+GLfloat *textureCoord1;
 
 GLfloat vertexPositions[] = {
 	-0.9875, 0.5, 0,

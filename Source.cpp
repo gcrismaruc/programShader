@@ -26,8 +26,8 @@ void addVertexPositions(){
 	/*vertexIndices1 = new GLuint[WIDTH * HEIGHT * 2];
 	vertexPositions1 = new GLfloat[WIDTH * HEIGHT * 3];
 	long long index = 0;
-	*/
-	/*for (unsigned int y = 0; y < HEIGHT; ++y) {
+	
+	for (unsigned int y = 0; y < HEIGHT; ++y) {
 		for (unsigned int x = 0; x < WIDTH; ++x) {
 			// Set the template vertex' position to the pixel center's position: 
 			vertexPositions1[index] = GLfloat(x) + 0.5;
@@ -51,6 +51,7 @@ void addVertexPositions(){
 
 	vertexIndices1 = new GLuint[WIDTH * HEIGHT * 2];
 	vertexPositions1 = new GLfloat[WIDTH * HEIGHT * 3];
+	textureCoord1 = new GLfloat[WIDTH * HEIGHT * 2];
 	long long index = 0;
 
 	for (double y = -1; y <= 1; y += 0.00416666666667) {
@@ -58,11 +59,10 @@ void addVertexPositions(){
 			// Set the template vertex' position to the pixel center's position: 
 			vertexPositions1[index] = GLfloat(x);
 			vertexPositions1[index + 1] = GLfloat(y);
-			vertexPositions1[index + 2] = GLfloat(0);		
+			vertexPositions1[index + 2] = GLfloat(0);
 			index += 3;
 		}
 	}
-
 	index = 0;
 	for (unsigned int y = 1; y < HEIGHT; ++y) {
 		for (unsigned int x = 0; x < WIDTH;  ++x) {
@@ -73,6 +73,17 @@ void addVertexPositions(){
 		}
 	}
 
+
+	index = 0;
+	for (unsigned int y = 0; y < HEIGHT; ++y) {
+		for (unsigned int x = 0; x < WIDTH; ++x) {
+			// Set the template vertex' position to the pixel center's position: 
+			textureCoord1[index] = GLfloat(x);
+			textureCoord1[index + 1] = GLfloat(y);
+
+			index += 2;
+		}
+	}
 	
 	/*ofstream f("vertexPositions.txt");
 
@@ -228,8 +239,8 @@ void setShaders(){
 	
 	//imagine kinect
 	int width, height;
-	imgKinect = cv::imread("calibration\\calibration2.png", CV_LOAD_IMAGE_UNCHANGED | CV_LOAD_IMAGE_ANYDEPTH);
-
+	imgKinect = cv::imread("calibration\\calibration20.png", CV_LOAD_IMAGE_UNCHANGED | CV_LOAD_IMAGE_ANYDEPTH);
+	//cv::flip(imgKinect, imgKinect,0);
 	//std::cout << type2str(imgKinect.type())<<endl;
 	glEnable(GL_TEXTURE_RECTANGLE);					// Turn on texturing
 	glGenTextures(2, &imageTextureBufferID);				// Create an ID for a texture buffer
@@ -278,16 +289,6 @@ void display() {
 	glUniformMatrix4fv(depthProjMatrix_location, 1, GL_TRUE, depthProjectionMatrix);
 
 
-	/*glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
-	glBindBuffer(GL_ARRAY_BUFFER, vbo);
-
-	glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, WIDTH, HEIGHT, GL_LUMINANCE, GL_UNSIGNED_SHORT, imgKinect.ptr());
-	*/
-	//glDrawElements(GL_QUAD_STRIP, 12, GL_UNSIGNED_INT, 0);
-
-	//glDrawArrays(GL_TRIANGLES, 0, 4);
-	
-	//glDrawElements(GL_QUAD_STRIP, 4, GL_UNSIGNED_INT, 0);
 
 	GLuint* indexPtr = 0;
 	for (unsigned int y = 1; y < HEIGHT; ++y, indexPtr += WIDTH * 2){
@@ -316,7 +317,7 @@ int main(int argc, char** argv) {
 	glutInitContextProfile(GLUT_CORE_PROFILE);
 	glutInitContextFlags(GLUT_FORWARD_COMPATIBLE);
 
-	glutInitWindowSize(640, 480);
+	glutInitWindowSize(WIDTH, HEIGHT);
 
 	glutCreateWindow("Hello");
 
@@ -353,17 +354,16 @@ int main(int argc, char** argv) {
 	glGenBuffers(1, &vbo);
 	glBindBuffer(GL_ARRAY_BUFFER, vbo);
 
-	glBufferData(GL_ARRAY_BUFFER, WIDTH * HEIGHT * 3 *sizeof(GLfloat), NULL, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, WIDTH * HEIGHT * 3 * sizeof(GLfloat)+WIDTH * HEIGHT * 2 * sizeof(GLfloat), NULL, GL_STATIC_DRAW);
 	glBufferSubData(GL_ARRAY_BUFFER, 0, WIDTH * HEIGHT * 3 * sizeof(GLfloat), vertexPositions1);
-	glVertexAttribPointer(idAttributePosition, 3, GL_FLOAT, GL_FALSE, 0, 0);
-
-	/*//load text coords
-	glBufferSubData(GL_ARRAY_BUFFER, sizeof(vertexPositions), sizeof(textureCoord), textureCoord);
+	glBufferSubData(GL_ARRAY_BUFFER, WIDTH * HEIGHT * 3 * sizeof(GLfloat), WIDTH * HEIGHT * 2 * sizeof(GLfloat), textureCoord1);
 
 	glVertexAttribPointer(idAttributePosition, 3, GL_FLOAT, GL_FALSE, 0, 0);
-	glVertexAttribPointer(imageTextureCoordID, 2, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(sizeof(vertexPositions)));
 
-	glEnableVertexAttribArray(imageTextureCoordID);*/
+	//load text coords
+	glVertexAttribPointer(imageTextureCoordID, 2, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(WIDTH * HEIGHT * 3 * sizeof(GLfloat)));
+
+	glEnableVertexAttribArray(imageTextureCoordID);
 	glEnableVertexAttribArray(idAttributePosition);
 	
 	//indices buffer
@@ -374,31 +374,9 @@ int main(int argc, char** argv) {
 	
 	
 	
-	/*
-	//create buffer not load anything
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertexPositions) + sizeof(textureCoord), NULL, GL_STATIC_DRAW);
-	//LOAD VERTEX POSITION
-	glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertexPositions), vertexPositions);
-	//load vertex colors
-	//glBufferSubData(GL_ARRAY_BUFFER, sizeof(vertexPositions), sizeof(vertexColors), vertexColors);
-
-	//load text coords
-	glBufferSubData(GL_ARRAY_BUFFER, sizeof(vertexPositions), sizeof(textureCoord), textureCoord);
-
-	glVertexAttribPointer(idAttributePosition, 3, GL_FLOAT, GL_FALSE, 0, 0);
-	//glVertexAttribPointer(idAttributeColor, 4, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(sizeof(vertexPositions)));
-	glVertexAttribPointer(imageTextureCoordID, 2, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(sizeof(vertexPositions)));
-	
-	//glEnableVertexAttribArray(idAttributeColor);
-	glEnableVertexAttribArray(imageTextureCoordID);
-	glEnableVertexAttribArray(idAttributePosition);
-	*/
 	
 	glutMainLoop();
 
-	/*glDisableVertexAttribArray(idAttributePosition);
-	glDisableVertexAttribArray(idUniformColor);
-	*/
 	glBindVertexArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glDeleteBuffers(2, idVbo);

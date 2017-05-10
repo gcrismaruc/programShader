@@ -7,11 +7,14 @@ uniform sampler2DRect texture;
 out vec4 fcolor;
 void main()
 {
-	//vec4 tex = vec4(texture2DRect(texture, texCoord).r) + vec4(0.1, 0.04, 0.2, 1.0);
+	vec4 tex = vec4(texture2DRect(texture, texCoord).r) + vec4(0.1, 0.04, 0.2, 1.0);
+	
+	//vec4 tex = vec4(texture2DRect(texture, texCoord).r);
 
-	vec2 tex =  texCoord;
+	fcolor = tex;
 
-    //fcolor = tex;
+	/*vec2 tex =  texCoord;
+
 	if(tex.x < 0) {
 		tex.x *= -1;
 	}
@@ -20,5 +23,5 @@ void main()
 		tex.y *= -1;
 	}
 
-	fcolor = vec4(tex.x, tex.y, tex.x + tex.y, 1.0);
+	fcolor = vec4(tex.x, tex.y, tex.x + tex.y, 1.0);*/
 }
