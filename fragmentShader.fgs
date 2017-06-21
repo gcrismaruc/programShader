@@ -5,23 +5,38 @@ in vec2 texCoord;
 uniform sampler2DRect texture;
 
 out vec4 fcolor;
+
+vec3 hsb2rgb( in vec3 c ){
+    vec3 rgb = clamp(abs(mod(c.x*6.0+vec3(0.0,4.0,2.0),
+                             6.0)-3.0)-1.0, 
+                     0.0, 
+                     1.0 );
+    rgb = rgb*rgb*(3.0-2.0*rgb);
+    return c.z * mix( vec3(1.0), rgb, c.y);
+}
+
 void main()
 {
-	vec4 tex = vec4(texture2DRect(texture, texCoord).r) + vec4(0.1, 0.04, 0.2, 1.0);
+	vec4 tex = vec4(texture2DRect(texture, texCoord).r * 30);
+
+	float z = texture2DRect(texture, texCoord).r;
+
+	/*if(z > 900) {
+		tex += vec4(0.1, 0.2, 0.4, 1.0);
+	} 
+	
+	if(z > 0 && z < 1) {
+		tex += vec4(0.1, 0.3, 0.1, 1.0);
+	} else {
+		tex = vec4(4);
+	}*/
+
+	tex +=  hsb2rgb(vec3(z));
+
+	
 	
 	//vec4 tex = vec4(texture2DRect(texture, texCoord).r);
 
 	fcolor = tex;
-
-	/*vec2 tex =  texCoord;
-
-	if(tex.x < 0) {
-		tex.x *= -1;
-	}
-
-	if(tex.y < 0) {
-		tex.y *= -1;
-	}
-
-	fcolor = vec4(tex.x, tex.y, tex.x + tex.y, 1.0);*/
 }
+

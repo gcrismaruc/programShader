@@ -30,12 +30,13 @@ GLhandleARB idEbo;
 GLhandleARB idVShader;
 GLhandleARB idFShader;
 GLhandleARB idAttributePosition;
+GLhandleARB idAttributeZCoordinate;
 GLhandleARB idAttributeColor;
 GLhandleARB idUniformColor;
 GLhandleARB pmatrix_location;
 GLhandleARB rmatrix_location;
-GLhandleARB smatrix_location;
 
+GLhandleARB viewPort_location;
 GLhandleARB projMatrix_location;
 GLhandleARB depthProjMatrix_location;
 
@@ -59,6 +60,7 @@ int vertexIndices[] = {
 GLuint * vertexIndices1;
 GLfloat *vertexPositions1;
 GLfloat *textureCoord1;
+GLfloat *zCoordinate;
 
 GLfloat vertexPositions[] = {
 	-0.9875, 0.5, 0,
@@ -115,35 +117,34 @@ GLfloat rmatrix[] = {
 	0.0f, 0.0f, 0.0f, 1.0f
 };
 
-GLfloat smatrix[] = {
-	1.0f, 0.0f, 0.0f, 0.0f,
-	0.0f, cos(10), sin(10), 0.0f,
-	0.0f, -sin(10), cos(10), 0.0f,
-	0.0f, 0.0f, 0.0f, 1.0f
+GLfloat viewPort[] = {
+	1, 0, 0, 0,
+	0, 1.333333333333333, 0, 0,
+	0, 0, -1.002002002002002, -0.2002002002002002,
+	0, 0, -1, 0
 };
 
 float angle = 0.0f;
 
+//GLfloat projectionMatrix[] = {
+//	2.99952f, 0.0757395f, 0.0550869f, 7.13796f,
+//	- 0.100926f, 4.00626f, 0.857646f, 82.5232f,
+//	0.0743716f, 0.0344721f, - 1.53409f, - 73.0032f,
+//	0.0484101f, 0.0224387f, - 0.998575f, 64.4322f
+//};
+
 GLfloat projectionMatrix[] = {
-	1.98761f, - 0.110331f, - 0.228261f, - 20.3096f,
-	- 0.0863136f,  2.3955f,  1.04354f,  98.3571f,
-	- 0.0026282f, - 0.116978f,  1.53254f,  170.111f,
-	- 0.00170995f, - 0.0761082f,  0.997098f,  184.214f
+	3.60291f, -0.0682034f, -0.635952f, -58.0176f,
+	0.0946639f, 4.77029f, 1.30154f, 122.229f,
+	0.234703f, 0.04387f, -1.55057f, -198.061f,
+	0.149602f, 0.0279632f, -0.988351f, -262.8f
 };
 
-//GLfloat projectionMatrix[] = {
-//	-0.0403285f, - 0.0154059f, - 0.231736f, - 23.5552f,
-//	0.00303723f, - 0.0890088f, - 0.244171f, - 25.1202f,
-//	- 4.64821e-005f,  0.00438945f,  0.0555216f,  5.35711f,
-//	- 0.000834586f,  0.0788126f,  0.996889f,  99.7814f
-//};
 
-//GLfloat projectionMatrix[] = {
-//	2.00197f, - 0.110667f, - 0.227943f, - 20.2784f,
-//	- 0.0864975f, 2.41306f, 1.05102f, 99.06f,
-//	- 0.00296481f, - 0.117514f, 1.53336f, 170.397f,
-//	- 0.00192788f, - 0.0764144f, 0.997074f, 184.904f
-//};
+//0.000534534, -2.02294e-05, 6.75135e-06, 4.35879e-06,
+//6.55067e-06, 0.000708243, -1.84155e-06, -1.18893e-06,
+//-2.28069e-05, -0.000239963, 0.000216806, -0.00019543,
+//-0.154969, 0.00970855, -0.0830702, 0.31176
 
 GLfloat depthProjectionMatrix[] = {
 	0.000173667, 0.0f, 0.0f, 0.0f,
@@ -152,11 +153,11 @@ GLfloat depthProjectionMatrix[] = {
 	-0.055573332f, -0.041679999f, -0.1f, 0.00315323f
 };
 
-//GLfloat projectionMatrix[] = {
-//	0.00741191f, -0.000695842f, 0.0028695f, 0.611736f,
-//	-0.000246396f, 0.00649244f, 0.00571214f, 0.790973f,
-//	0.0f, 0.0f, 1.0f, 0.0f,
-//	- 1.24648e-008f, - 5.54797e-007f, 7.26843e-006f, 0.00134284f
+//GLfloat depthProjectionMatrix[] = {
+//	0.000173667f,	0,	0, - 0.055573332f,
+//	0,	0.000173667f,	0, - 0.041679999f,
+//	0,	0,	0, - 0.1f,
+//	0,	0, - 0.00000289f,	0.00315323f
 //};
 
 GLhandleARB ebo;
